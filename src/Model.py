@@ -83,21 +83,30 @@ class MHGCN(nn.Module):
         """
         Set the trainable weight of adjacency matrix aggregation
         """
-        # Alibaba
-        # self.weight_b = torch.nn.Parameter(torch.FloatTensor(4, 1), requires_grad=True)
-        # torch.nn.init.uniform_(self.weight_b,a = 0,b = 0.1)
-
-        # DBLP
-        self.weight_b = torch.nn.Parameter(torch.FloatTensor(3, 1), requires_grad=True)
-        torch.nn.init.uniform_(self.weight_b, a=0, b=0.1)
-
-        # Aminer
-        # self.weight_b = torch.nn.Parameter(torch.FloatTensor(2, 1), requires_grad=True)
-        # torch.nn.init.uniform_(self.weight_b, a=0, b=1)
-
-        # IMDB
-        # self.weight_b = torch.nn.Parameter(torch.FloatTensor(2, 1), requires_grad=True)
-        # torch.nn.init.uniform_(self.weight_b, a=0, b=0.1)
+        # 根据数据集名称自动设置权重参数
+        dataset_name = __import__('sys').argv[0].split('_')[0].split('/')[-1].split('\\')[-1]
+        
+        # 根据运行的脚本自动选择合适的权重维度
+        if 'Alibaba' in dataset_name or 'small_alibaba_1_10' in dataset_name:
+            # Alibaba
+            self.weight_b = torch.nn.Parameter(torch.FloatTensor(4, 1), requires_grad=True)
+            torch.nn.init.uniform_(self.weight_b, a=0, b=0.1)
+        elif 'DBLP' in dataset_name:
+            # DBLP
+            self.weight_b = torch.nn.Parameter(torch.FloatTensor(3, 1), requires_grad=True)
+            torch.nn.init.uniform_(self.weight_b, a=0, b=0.1)
+        elif 'Aminer' in dataset_name:
+            # Aminer
+            self.weight_b = torch.nn.Parameter(torch.FloatTensor(2, 1), requires_grad=True)
+            torch.nn.init.uniform_(self.weight_b, a=0, b=1)
+        elif 'IMDB' in dataset_name or 'imdb' in dataset_name:
+            # IMDB
+            self.weight_b = torch.nn.Parameter(torch.FloatTensor(2, 1), requires_grad=True)
+            torch.nn.init.uniform_(self.weight_b, a=0, b=0.1)
+        else:
+            # 默认使用Alibaba的配置
+            self.weight_b = torch.nn.Parameter(torch.FloatTensor(4, 1), requires_grad=True)
+            torch.nn.init.uniform_(self.weight_b, a=0, b=0.1)
 
     def forward(self, feature, A, use_relu=True):
         final_A = adj_matrix_weight_merge(A, self.weight_b)

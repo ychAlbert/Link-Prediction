@@ -8,33 +8,42 @@ from src.node_classfication_evaluate import node_classification_evaluate
 
 args = get_citation_args()
 
-# IMDB
-# args.dataset = 'imdb_1_10'
-# eval_name = r'data/imdb_1_10'
-# net_path = r"data/IMDB/imdb_1_10.mat"
-# savepath = r'data/imdb_embedding_1_10'
-# eval_name = r'imdb_1_10'
+# 定义数据集配置
+dataset_configs = {
+    'IMDB': {
+        'dataset': 'imdb_1_10',
+        'eval_name': r'data/imdb_1_10',
+        'net_path': r"data/IMDB/imdb_1_10.mat",
+        'savepath': r'data/imdb_embedding_1_10'
+    },
+    'DBLP': {
+        'dataset': 'DBLP',
+        'eval_name': r'data/DBLP',
+        'net_path': r"data/dblp/DBLP.mat",
+        'savepath': r'data/DBLP_embedding'
+    },
+    'Aminer': {
+        'dataset': 'Aminer_10k_4class',
+        'eval_name': r'Aminer_10k_4class',
+        'net_path': r'../data/Aminer_1_13/Aminer_10k_4class.mat',
+        'savepath': r'embedding/Aminer_10k_4class_aminer_embedding_'
+    },
+    'Alibaba': {
+        'dataset': 'small_alibaba_1_10',
+        'eval_name': r'small_alibaba_1_10',
+        'net_path': r'data/small_alibaba_1_10/small_alibaba_1_10.mat',
+        'savepath': r'data/alibaba_embedding_'
+    }
+}
 
-# DBLP
-args.dataset = 'DBLP'
-eval_name = r'data/DBLP'
-net_path = r"data/dblp/DBLP.mat"
-savepath = r'data/DBLP_embedding'
-eval_name = r'DBLP'
+# 选择数据集
+selected_dataset = 'Alibaba'  # 修改这一行来选择不同的数据集
 
-# Aminer
-# args.dataset = 'Aminer_10k_4class'
-# eval_name = r'Aminer_10k_4class'
-# net_path = r'../data/Aminer_1_13/Aminer_10k_4class.mat'
-# savepath = r'embedding/Aminer_10k_4class_aminer_embedding_'
-# eval_name = r'Aminer_10k_4class'
-
-# alibaba
-# args.dataset = 'small_alibaba_1_10'
-# eval_name = r'small_alibaba_1_10'
-# net_path = r'data/small_alibaba_1_10/small_alibaba_1_10.mat'
-# savepath = r'data/alibaba_embedding_'
-# eval_name = r'small_alibaba_1_10'
+# 应用选择的数据集配置
+args.dataset = dataset_configs[selected_dataset]['dataset']
+eval_name = dataset_configs[selected_dataset]['eval_name']
+net_path = dataset_configs[selected_dataset]['net_path']
+savepath = dataset_configs[selected_dataset]['savepath']
 
 mat = loadmat(net_path)
 
@@ -76,6 +85,6 @@ adj, features, labels, idx_train, idx_val, idx_test = load_our_data(args.dataset
 
 model = get_model(args.model, features.size(1), labels.max().item()+1, A, args.hidden, args.out, args.dropout, False)
 
-f1_ma, f1_mi = node_classification_evaluate(model, feature, A, eval_name, file_type='mat', device=torch.device('cpu'))
+f1_ma, f1_mi = node_classification_evaluate(model, feature, A, eval_name, file_type='mat', device=torch.device('cuda'))
 
 print('Test F1-ma: {:.10f}, F1-mi: {:.10f}'.format(f1_ma, f1_mi))

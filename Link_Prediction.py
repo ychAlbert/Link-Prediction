@@ -9,47 +9,60 @@ from src.link_prediction_evaluate import predict_model
 
 args = get_citation_args()
 
-# IMDB
-# args.dataset = 'imdb_1_10'
-# eval_name = r'data/imdb_1_10'
-# net_path = r"data/IMDB/imdb_1_10.mat"
-# savepath = r'data/imdb_embedding_1_10'
-# eval_name = r'imdb_1_10'
-# file_name = r'data/IMDB'
-# eval_type = 'all'
+# 定义数据集配置
+dataset_configs = {
+    'IMDB': {
+        'dataset': 'imdb_1_10',
+        'eval_name': r'imdb_1_10',
+        'net_path': r"data/IMDB/imdb_1_10.mat",
+        'savepath': r'data/imdb_embedding_1_10',
+        'file_name': r'data/IMDB',
+        'eval_type': 'all'
+    },
+    'DBLP': {
+        'dataset': 'DBLP',
+        'eval_name': r'DBLP',
+        'net_path': r"data/dblp/DBLP.mat",
+        'savepath': r'data/DBLP_embedding',
+        'file_name': r'data/dblp',
+        'eval_type': 'all'
+    },
+    'Aminer': {
+        'dataset': 'Aminer_10k_4class',
+        'eval_name': r'Aminer_10k_4class',
+        'net_path': r'../data/Aminer_1_13/Aminer_10k_4class.mat',
+        'savepath': r'embedding/Aminer_10k_4class_aminer_embedding_',
+        'file_name': r'../data/Aminer_1_13',
+        'eval_type': 'all'
+    },
+    'Alibaba': {
+        'dataset': 'small_alibaba_1_10',
+        'eval_name': r'small_alibaba_1_10',
+        'net_path': r'data/small_alibaba_1_10/small_alibaba_1_10.mat',
+        'savepath': r'data/alibaba_embedding_',
+        'file_name': r'data/small_alibaba_1_10',
+        'eval_type': 'all'
+    },
+    'Amazon': {
+        'dataset': 'amazon',
+        'eval_name': r'amazon',
+        'net_path': r'data/amazon/amazon.mat',
+        'savepath': r'data/amazon_embedding_',
+        'file_name': r'data/amazon',
+        'eval_type': 'all'
+    }
+}
 
-# DBLP
-args.dataset = 'DBLP'
-net_path = r"data/dblp/DBLP.mat"
-savepath = r'data/DBLP_embedding'
-eval_name = r'DBLP'
-file_name = r'data/dblp'
-eval_type = 'all'
+# 选择数据集
+selected_dataset = 'DBLP'  # 修改这一行来选择不同的数据集
 
-# Aminer
-# args.dataset = 'Aminer_10k_4class'
-# eval_name = r'Aminer_10k_4class'
-# net_path = r'../data/Aminer_1_13/Aminer_10k_4class.mat'
-# savepath = r'embedding/Aminer_10k_4class_aminer_embedding_'
-# file_name = r'../data/Aminer_1_13'
-# eval_type = 'all'
-
-# alibaba
-# args.dataset = 'small_alibaba_1_10'
-# eval_name = r'small_alibaba_1_10'
-# net_path = r'data/small_alibaba_1_10/small_alibaba_1_10.mat'
-# savepath = r'data/alibaba_embedding_'
-# file_name = r'data/small_alibaba_1_10'
-# eval_type = 'all'
-
-
-# amazon
-# args.dataset = 'amazon'
-# eval_name = r'amazon'
-# net_path = r'data/amazon/amazon.mat'
-# savepath = r'data/amazon_embedding_'
-# file_name = r'data/amazon'
-# eval_type = 'all'
+# 应用选择的数据集配置
+args.dataset = dataset_configs[selected_dataset]['dataset']
+eval_name = dataset_configs[selected_dataset]['eval_name']
+net_path = dataset_configs[selected_dataset]['net_path']
+savepath = dataset_configs[selected_dataset]['savepath']
+file_name = dataset_configs[selected_dataset]['file_name']
+eval_type = dataset_configs[selected_dataset]['eval_type']
 
 mat = loadmat(net_path)
 
