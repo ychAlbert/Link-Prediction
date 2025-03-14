@@ -54,7 +54,7 @@ dataset_configs = {
 }
 
 # 选择数据集
-selected_dataset = 'DBLP'  # 修改这一行来选择不同的数据集
+selected_dataset = 'Alibaba'  # 修改这一行来选择不同的数据集
 
 # 设置使用增强型模型
 args.model = "EnhancedMHGCNWithContrastive"  # 使用带对比学习的增强型模型

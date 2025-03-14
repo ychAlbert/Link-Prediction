@@ -89,7 +89,17 @@ class EnhancedMHGCN(nn.Module):
             try:
                 feature = torch.from_numpy(feature.toarray())
             except:
-                pass
+                # 如果已经是张量，则不需要转换
+                if not isinstance(feature, torch.Tensor):
+                    try:
+                        feature = torch.tensor(feature)
+                    except:
+                        pass
+        
+        # 确保所有张量的 dtype 一致
+        if isinstance(feature, torch.Tensor):
+            feature = feature.float()
+        A = [a.float() if isinstance(a, torch.Tensor) else a for a in A]
         
         # 动态关系聚合
         final_A, relation_attention = self.relation_aggregation(A)
@@ -199,7 +209,13 @@ class EnhancedMHGCNWithContrastive(EnhancedMHGCN):
             try:
                 feature_tensor = torch.from_numpy(feature.toarray())
             except:
-                feature_tensor = feature
+                if isinstance(feature, torch.Tensor):
+                    feature_tensor = feature
+                else:
+                    try:
+                        feature_tensor = torch.tensor(feature)
+                    except:
+                        feature_tensor = feature
         
         view1 = self.augmentor1(feature_tensor)
         view2 = self.augmentor2(feature_tensor)
